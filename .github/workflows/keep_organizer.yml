@@ -1,0 +1,30 @@
+name: Google Keep Auto Organizer
+
+on:
+  schedule:
+    # 每天早上 9 點自動執行 (UTC 01:00 = 台北 09:00)
+    - cron: '0 1 * * *'
+  workflow_dispatch: # 讓您可以手動點擊執行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install gkeepapi
+
+    - name: Run Keep Organizer
+      env:
+        KEEP_USERNAME: ${{ secrets.KEEP_USERNAME }}
+        KEEP_PASSWORD: ${{ secrets.KEEP_PASSWORD }}
+      run: python keep_fix.py
